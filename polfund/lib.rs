@@ -1,7 +1,10 @@
 #![cfg_attr(not(feature = "std"), no_std, no_main)]
 
+
 #[ink::contract]
 mod polfund {
+    use ink::storage::Mapping;
+    use ink::prelude::vec::Vec;
 
     /// Defines the storage of your contract.
     /// Add new fields to the below struct in order
@@ -12,34 +15,130 @@ mod polfund {
         value: bool,
     }
 
+    #[ink(storage)]
+    pub struct CrowdFundingDeFi {
+        name : String,
+        location : String,
+        owner: AccountId,
+        campaigns: StorageHashMap<AccountId, Campaign>,
+        contributors: StorageHashMap<(AccountId, AccountId), Balance>,
+        loans: StorageVec<Loan>,
+        locked_assets: StorageHashMap<AccountId, Balance>,
+        staked_assets: StorageHashMap<AccountId, Balance>,
+        messages: StorageHashMap<(AccountId, AccountId), Vec<Message>>,
+    }
+    
+
+    #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
+    pub struct Loan {
+        borrower: AccountId,
+        amount: Balance,
+        interest_rate: u32,
+        duration: u32,
+        collateral: Balance,
+    }
+
+    #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
+    pub struct Message {
+        sender: AccountId,
+        receiver : AccountId,
+        content: String,
+    }
+
+
+    #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
+    pub struct Campaign {
+        creator: AccountId,
+        target_amount: Balance,
+        current_amount: Balance,
+        deadline: u64,
+        is_closed: bool,
+    }
+
+
     impl Polfund {
         /// Constructor that initializes the `bool` value to the given `init_value`.
+        // #[ink(constructor)]
+        // pub fn new(init_value: bool) -> Self {
+        //     Self { value: init_value }
+        // }
+
         #[ink(constructor)]
-        pub fn new(init_value: bool) -> Self {
-            Self { value: init_value }
+        pub fn new(_name : String, _location : String) -> Self {
+            Self {
+                name : _name,
+                location : _location,
+                owner: Self::env().caller(),
+                campaigns: StorageHashMap::new(),
+                backers: StorageHashMap::new(),
+                loans: StorageVec::new(),
+                locked_assets: StorageHashMap::new(),
+                staked_assets: StorageHashMap::new(),
+                messages: StorageHashMap::new(),
+            }
         }
 
-        /// Constructor that initializes the `bool` value to `false`.
-        ///
-        /// Constructors can delegate to other constructors.
-        #[ink(constructor)]
-        pub fn default() -> Self {
-            Self::new(Default::default())
-        }
-
-        /// A message that can be called on instantiated contracts.
-        /// This one flips the value of the stored `bool` from `true`
-        /// to `false` and vice versa.
         #[ink(message)]
-        pub fn flip(&mut self) {
-            self.value = !self.value;
+        pub fn create_campaign(&mut self, target_amount: Balance, deadline: u64) {
+            let creator = self.env().caller();
+            let campaign = Campaign {
+                creator,
+                target_amount,
+                current_amount: 0,
+                deadline,
+                is_closed: false,
+            };
+            self.campaigns.insert(creator, campaign);
         }
 
-        /// Simply returns the current value of our `bool`.
+
         #[ink(message)]
-        pub fn get(&self) -> bool {
-            self.value
+        pub fn contribute_to_campaign(&mut self, campaign_creator: AccountId, amount: Balance) {
+            let contributor = self.env().caller();
+            let campaign = self.campaigns.get_mut(&campaign_creator).expect("Campaign not found");
+
+            assert!(
+                !campaign.is_closed,
+                "You cannot contribute to a closed campaign!"
+            );
+            assert!(
+                self.env().block_timestamp() < campaign.deadline,
+                "Campaign deadline passed "
+            );
+
+            campaign.current_amount += amount;
+            let key = (campaign_creator, contributor);
+            let contributor_balance = self.contributors.entry(key).or_insert(0);
+            *contributor_balance += amount;
         }
+
+        #[ink(message)]
+        pub fn close_campaign(&mut self, campaign_creator: AccountId) {
+            let campaign = self.campaigns.get_mut(&campaign_creator).expect("Campaign not found");
+            assert!(
+                self.env().block_timestamp() >= campaign.deadline,
+                "Cannot close campaign before deadline"
+            ); // Depnding though
+            campaign.is_closed = true;
+        }
+
+
+        // Message feat
+        #[ink(message)]
+        pub fn send_message(&mut self, recipient: AccountId, content: String) {
+            let sender = self.env().caller();
+            let key = (sender, recipient);
+            let message = Message { sender, receiver, content };
+            let message_list = self.messages.entry(key).or_insert(Vec::new());
+            message_list.push(message);
+        }
+
+        #[ink(message)]
+        pub fn get_messages(&self, sender: AccountId, recipient: AccountId) -> Vec<Message> {
+            self.messages.get(&(sender, recipient)).cloned().unwrap_or_default()
+        }
+
+
     }
 
     /// Unit tests in Rust are normally defined within such a `#[cfg(test)]`
@@ -51,20 +150,20 @@ mod polfund {
         use super::*;
 
         /// We test if the default constructor does its job.
-        #[ink::test]
-        fn default_works() {
-            let polfund = Polfund::default();
-            assert_eq!(polfund.get(), false);
-        }
+        // #[ink::test]
+        // fn default_works() {
+        //     let polfund = Polfund::default();
+        //     assert_eq!(polfund.get(), false);
+        // }
 
-        /// We test a simple use case of our contract.
-        #[ink::test]
-        fn it_works() {
-            let mut polfund = Polfund::new(false);
-            assert_eq!(polfund.get(), false);
-            polfund.flip();
-            assert_eq!(polfund.get(), true);
-        }
+        // /// We test a simple use case of our contract.
+        // #[ink::test]
+        // fn it_works() {
+        //     let mut polfund = Polfund::new(false);
+        //     assert_eq!(polfund.get(), false);
+        //     polfund.flip();
+        //     assert_eq!(polfund.get(), true);
+        // }
     }
 
 
