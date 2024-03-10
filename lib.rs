@@ -10,6 +10,9 @@ mod Polfund {
     use ink::prelude::vec::Vec;
     use ink::storage::Lazy;
 
+    // use ink::storage::traits::PackedLayout;
+    use scale::{Encode, Decode};
+
     #[ink(storage)]
     pub struct Polfund {
         name : String,
@@ -33,15 +36,28 @@ mod Polfund {
         collateral: Balance,
     }
 
-    #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
+    #[derive(Debug, PartialEq, Eq, Encode, Decode)]
     pub struct Message {
         sender: AccountId,
         recipient : AccountId,
         content: String,
     }
 
+    // impl scale_info::TypeInfo for Message {
+    //     fn type_info() -> scale_info::Type {
+    //         scale_info::Type::builder()
+    //             .path(Some("Message"))
+    //             .composite_type(vec![
+    //                 ("sender", <AccountId as scale_info::TypeInfo>::type_info()),
+    //                 ("recipient", <AccountId as scale_info::TypeInfo>::type_info()),
+    //                 ("content", <String as scale_info::TypeInfo>::type_info()),
+    //             ])
+    //             .build()
+    //     }
+    // }
 
-    #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode, TypeInfo)]
+
+    #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
     pub struct Campaign {
         creator: AccountId,
         target_amount: Balance,
