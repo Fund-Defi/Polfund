@@ -52,6 +52,12 @@ Polfund is a decentralised funding decentralised application (DApp) built on the
 - A client library for third-party DApps to integrate PolFund as a payment method.
 - Developers can leverage PolFund's infrastructure for decentralized transactions.
 
+### Regardig the first workshop
+
+**I got the idea from the first workshop; Start building dApps on ink! workshop. While ink! focused on how easy it is to create a dApp with the greeter dApp example, it shows how easy it is to connect any wallet,  I could picture solving a problem around raising funds with any coin you have.
+
+
+**My idea is totally different from the greeter DApp example in that mine has to do with you receiving live funds, locking them, swapping them, borrowing and lending to mention a few while the greeter app focuses mainly on creating a great and fetching it. 
 
  
 
