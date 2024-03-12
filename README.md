@@ -4,15 +4,56 @@ Polfund is a decentralised funding decentralised application (DApp) built on the
 
 ## Features
 
-- **Project Funding:** Users can create funding projects by specifying the target amount, deadline, and other project details.
-- **Contribution:** Users can contribute funds to projects they are interested in, enabling decentralized fundraising.
-- **Project Closure:** Project creators can close projects once the funding target is reached or the project deadline is reached.
-- **Messaging:** Users can send messages to each other within the platform, facilitating communication between project creators and contributors.
-- **Defi Features:**
-  - **Borrowing and Lending:** Users can borrow or lend assets within the platform, enabling liquidity provision.
-  - **Locking of Assets:** Users can lock their assets for a specified period, which can be used as collateral for loans or other purposes.
-  - **Staking of Assets:** Users can stake their assets to earn rewards or participate in governance.
-  - **Integration with Native Tokens:** Introduction of native tokens to the platform, enabling additional functionalities, governance, and incentives within the ecosystem.
+### Crowdfunding
+- Users can create crowdfunding campaigns for their projects.
+- Contributors can fund projects with DOT or other supported assets.
+- Funds are held in smart contracts until project milestones are met.
+
+### Project Funding
+- Users can create funding projects by specifying the target amount, deadline, and other project details.
+- Users can contribute funds to projects they are interested in, enabling decentralized fundraising.
+
+### Investments
+- Users can invest in projects listed on the platform.
+- Projects may offer equity, revenue sharing, or other investment opportunities.
+
+### Lending and Borrowing
+- PolFund facilitates peer-to-peer lending and borrowing of assets.
+- Users can lend their assets to earn interest or borrow assets by providing collateral.
+
+### Marketplace
+- A decentralized marketplace where users can buy and sell goods and services.
+- Integration with Polkadot tokens for seamless transactions.
+
+### Messaging
+- Users can send messages to each other within the platform, facilitating communication between project creators and contributors.
+
+### Swapping
+- Users can swap one asset for another directly on the platform.
+- Liquidity pools ensure efficient and secure trading.
+
+###  Locking of Assets
+- Users can lock their assets for a specified period, which can be used as collateral for loans or other purposes.
+
+### Staking of Assets
+- Users can stake their assets to earn rewards or participate in governance.
+
+### Integration with Native Tokens
+- Introduction of native tokens to the platform, enabling additional functionalities, governance, and incentives within the ecosystem.
+
+### Fractionalization
+- Allows users to fractionalize ownership of assets, enabling investment in high-value assets with smaller amounts.
+
+### Payroll System
+- Employers can register workers and pay them in DOT through the platform.
+- Streamlined payroll management with automated processes.
+
+### Client Library
+- A client library for third-party DApps to integrate PolFund as a payment method.
+- Developers can leverage PolFund's infrastructure for decentralized transactions.
+
+
+ 
 
 ## Future Features
 
